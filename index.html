@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Log</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 20px;
+        }
+        h1, h2, h3 {
+            color: #0056b3;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .log-entry {
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Dev Log</h1>
+
+    <div class="log-entry">
+        <h2>Dev Log - Entry 1</h2>
+        <p>This is the start of my dev log. Right now, my main focus is Android development. It’s the technology I’m dedicating myself to this year. I started a little later than I planned and dove straight into working on a project with Jetpack Compose. I got stuck, though, which made me realize I skipped over some key concepts. To fix this, I decided to go back and cover the basics I missed.</p>
+        <p>Currently, I’m re-learning about coroutines and Room databases in a project called Criminal Intent which simulates logging of office "crimes". As for coroutines and databases... These concepts have been challenging, but pushing through them feels like a big milestone for me. Here's what I’ve learned so far:</p>
+        <h3>Coroutines</h3>
+        <p>Coroutines are a way to run multiple tasks at the same time without blocking the main thread. The main thread is what handles the execution of the program, so keeping it unblocked is important.</p>
+        <ul>
+            <li><strong>Coroutine Scope:</strong> Think of this as a construction site where all the work happens.</li>
+            <li><strong>Coroutine Builder:</strong> Like the construction workers that do the tasks within the scope.</li>
+            <li><strong>Jobs:</strong> These might be the actual tasks or threads being executed. I still need to confirm this.</li>
+        </ul>
+        <h3>RecyclerViews</h3>
+        <p>Before tackling coroutines, I was learning about RecyclerViews. I got the basics down, like understanding adapters (which populate the views). But RecyclerViews are becoming outdated, and the transition to Compose has been where things got tricky.</p>
+        <p>My main struggle with Compose is understanding some specific issues I ran into during my project. I plan to revisit those problems once I have a better grasp of the foundational concepts.</p>
+    </div>
+
+    <div class="log-entry">
+        <h2>Dev Log - Entry 2: Repository, Room Database, Application Class, and Coroutine Patterns</h2>
+        <h3>Room Database:</h3>
+        <p>Room is an Object Relational Mapper (ORM) that maps objects to tables in a SQLite database.</p>
+        <ul>
+            <li><strong>@Entity:</strong> Represents a table in the database.</li>
+            <li><strong>@PrimaryKey:</strong> Identifies unique rows within the table.</li>
+        </ul>
+        <h3>Repository Pattern:</h3>
+        <p>The repository class acts as a "go-between" for the application logic and the Room database. It abstracts data access, allowing the application to interact with the repository rather than the database directly. At this stage, the repository is simple and mostly serves as a singleton (a class with only one instance).</p>
+        <h3>Application Class vs. Activity</h3>
+        <p>I explored how the Application class differs from Activity and its importance for persisting data across configuration changes.</p>
+        <ul>
+            <li><strong>Activity:</strong> Activities are tied to the Android lifecycle. For example, rotating the device triggers a configuration change, causing the activity to be recreated. This recreation can lead to delays or data loss (e.g., waiting for coroutines to repopulate a view).</li>
+            <li><strong>Application Class:</strong> The Application class can persist data across configuration changes because it survives the entire app lifecycle. To integrate it, I had to modify the manifest file to specify which Application and Activity classes to use. However, I struggled with configuring the XML structure of the manifest—an area I need to revisit.</li>
+        </ul>
+        <h3>Coroutine Patterns and Construction Site Analogy</h3>
+        <ul>
+            <li><strong>Coroutine Scope:</strong> Defines where and how coroutines operate. Acts as the boundary for all coroutine-related activities.</li>
+            <li><strong>Coroutine Builder:</strong> Functions like launch or async that starts a coroutine. They assign tasks (threads, which are in suspending functions) to workers within the construction site (scope).</li>
+            <li><strong>Suspending Function:</strong> Represents the actual work being done by a coroutine (e.g., network calls, database operations). Can "pause" to wait for resources, freeing up the thread without blocking other operations.</li>
+            <li><strong>Job:</strong> Tracks the lifecycle of a coroutine, including its status (e.g., active, completed, canceled). You can pass a Job to another component to monitor progress or trigger actions upon completion.</li>
+        </ul>
+        <h3>Next Steps</h3>
+        <ul>
+            <li>Fix the manifest file configuration to properly integrate the Application class.</li>
+            <li>Deepen my understanding of coroutines, especially their interaction with Room and repository patterns.</li>
+            <li>Continue refining my ability to explain these concepts, as understanding is often deepened through teaching or analogy creation.</li>
+        </ul>
+    </div>
+
+    <div class="log-entry">
+        <h2>Dev Log Entry 3: Debugging, Databases, Abstract Classes and Interfaces</h2>
+        <h3>Overview</h3>
+        <p>Today was all about working through dependency issues, setting up the Room database, and connecting its components to the app architecture. While I made progress, some challenges still linger, particularly with data not displaying in the ViewModel.</p>
+        <h3>Dependency Issue with Room and KSP</h3>
+        <p>I started off with a build error related to dependencies. Room requires an annotation processor, and I had opted to use Kotlin Symbol Processing (KSP). What I learned is that KSP must be aligned with the Kotlin version; otherwise, it causes compatibility issues. Once I ensured the versions were aligned, the build finally ran successfully.</p>
+        <h3>Database Setup</h3>
+        <p>The next step was integrating Room into the app. This involved creating the following components:</p>
+        <ul>
+            <li><strong>Database (CrimeDatabase):</strong> Defined as an abstract class. Includes an abstract function crimeDao() that returns the DAO implementation.</li>
+            <li><strong>DAO [Data Access Object] (CrimeDao):</strong> Responsible for querying the database. Room automatically generates the implementation for the abstract DAO functions based on the annotations I provide.</li>
+            <li><strong>Repository:</strong> Acts as a middle layer between the DAO and ViewModel. Implemented as a singleton to ensure only one instance of the database is used throughout the app.</li>
+        </ul>
+        <p>To initialize the database, I used a prebuilt database file stored in an assets folder. This folder was created within the main package.</p>
+        <h3>Issue: Blank Data in ViewModel</h3>
+        <p>Even though there were no error messages, the ViewModel displayed blank data after populating the database. My current hypothesis is that the database may not have been correctly initialized. The next step here might be to inspect the database directly to verify its contents.</p>
+        <h3>Understanding Abstract Classes and Interfaces</h3>
+        <p>During the session, I also deepened my understanding of abstract classes and interfaces:</p>
+        <ul>
+            <li><strong>Abstract Classes:</strong> Designed to be extended. They ensure that functions declared within them are implemented by the extending classes.</li>
+            <li><strong>Interfaces:</strong> Serve a similar purpose but allow for greater flexibility since multiple interfaces can be implemented by a single class.</li>
+        </ul>
+        <h3>Reflection</h3>
+        <p>Today felt like a mixture of progress and puzzles. I solved the dependency issue and set up the database architecture, but the blank ViewModel data is a sticking point.</p>
+        <h3>Next Steps</h3>
+        <ul>
+            <li>Debug the database initialization, possibly using tools like SQLite Inspector.</li>
+            <li>Verify the data flow from the repository to the ViewModel.</li>
+            <li>Refine my understanding of Room’s auto-generated implementations to ensure I’m leveraging it correctly.</li>
+        </ul>
+    </div>
+
+    <div class="log-entry">
+        <h2>Mobile Dev by Moonlight: Log #1</h2>
+        <p>Tonight, on Mobile Dev by Moonlight Logs (this name makes it more fun, I think!), I managed to troubleshoot the Room database that was giving me a bit of trouble. <@696907598401896550> popped in and helped me as well. Using ChatGPT, the documentation, and a little bit of internet search, the issue of the database not populating was resolved. Here is the breakdown:</p>
+        <p>If you're using the Room databaseBuilder method and chain the createFromAssets function, your file needs to be in a root-level assets folder. The file must have a .db extension. In the Room databaseBuilder arguments, your database name does not include the .db extension. The schema must match the object fields you annotated with @Entity for the class you are creating a table of.</p>
+        <p>It also seemed important that I wipe the data from the emulator to get a fresh slate.</p>
+        <p>Another lesson learned tonight was inspecting database files. One of the issues I encountered was thinking the database was empty. In fact, I was using the database inspector incorrectly. The app, called DB Browser, showed the database, but I didn’t inspect the table properly, so I mistakenly thought it was empty.</p>
+        <h3>What’s Next?</h3>
+        <p>Looking ahead in the book, I'll be tackling Flows, which are part of the coroutine library. They’re a wellspring of data that services subscribe to asynchronously so that any changes to the source are pushed to the subscribers. In this case, my database will be a source. Any service that changes the database, even if not directly linked to my view, will also refresh the view. Normally, the view would stay stale unless explicitly refreshed each time.</p>
+        <p>See you next time!</p>
+    </div>
+
+    <div class="log-entry">
+        <h2>Mobile Dev by Moonlight: Log #2</h2>
+        <p>Tonight, I learned more about a concept we touched on briefly in the last log: Flows.</p>
+        <p>Flows are useful because they act as a single source of data that can be manipulated or read by all the components that collect from them. This is helpful when there may be a change in the database; the view that represents the entire database will automatically be notified of the changes.</p>
+        <p>The ViewModel in this app is populated by a database, which I turned into a flow by wrapping it in the Flow class in the Repository class. Where the database once offered a List of Crimes (<code>List&lt;Crime&gt;</code>), it was changed to offer a Flow of a List of Crimes (<code>Flow&lt;List&lt;Crime&gt;&gt;</code>). Then, in turn, we collected that flow with a collect method in the ViewModel class, essentially unwrapping the Flow back into a List of Crimes for the RecyclerView's standard consumption.</p>
+        <h3>Flow Types Encountered</h3>
+        <ul>
+            <li><strong>StateFlows:</strong> Flows with a cache of the latest data.</li>
+            <li><strong>MutableStateFlows:</strong> A mutable version of StateFlow.</li>
+            <li><strong>Regular Flows:</strong> Standard data streams.</li>
+            <li><strong>MutableFlows:</strong> Mutable data streams.</li>
+        </ul>
+        <p>To ensure immutability for consumers, I used backing variables:</p>
+        <pre><code>val crimes: StateFlow&lt;List&lt;Crime&gt;&gt;
+    get() = _crimes.asStateFlow()</code></pre>
+        <p>Only the repository would have the mutable version in this case. StateFlows are most useful for live streaming data.</p>
+        <h3>Reflection</h3>
+        <p>Next, I'll be looking into navigating through the app, clicking into detailed views, and how to get the app views to use the back command.</p>
+    </div>
+
+    <div class="log-entry">
+        <h2>Mobile Dev by Moonlight Log #3</h2>
+        <h3>Overview</h3>
+        <p>Last night I focused on exploring Android Navigation and implementing that through a navigation graph.</p>
+        <h3>What is a Navigation Graph?</h3>
+        <p>A navigation graph is an interactive visualization of the destinations your app selects based on the user's choices. It also manages the back button stack and provides other quality-of-life features for apps with complex navigation flows.</p>
+        <h3>Dependencies</h3>
+        <p>To set up navigation, the following dependencies were required:</p>
+        <ul>
+            <li><strong>AndroidX Navigation:</strong> The core library for implementing navigation.</li>
+            <li><strong>Fragment Navigation Library:</strong> Specific to handling navigation between fragments.</li>
+        </ul>
+        <pre><code>implementation("androidx.navigation:navigation-ui-ktx:2.8.5")
+implementation("androidx.navigation:navigation-fragment-ktx:2.8.5")</code></pre>
+        <p>It was essential to ensure that these libraries were compatible with the primary Fragment Library and Lifecycle Library.</p>
+        <h3>Linking the Navigation Graph</h3>
+        <p>The navigation graph is linked to the Main Activity via XML:</p>
+        <pre><code>&lt;androidx.fragment.app.FragmentContainerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_container"
+    android:name="androidx.navigation.fragment.NavHostFragment"
+    app:defaultNavHost="true"
+    app:navGraph="@navigation/nav_graph" /&gt;</code></pre>
+        <p>The navigation graph became visible in Design View, allowing views to be connected by dragging and dropping arrows between them.</p>
+        <h3>Reflection</h3>
+        <p>I finished an introductory session on navigation and got the navigation graph visualization to work. I also linked one view to another. The concept of the NavController is next.</p>
+    </div>
+
+</body>
+</html>
