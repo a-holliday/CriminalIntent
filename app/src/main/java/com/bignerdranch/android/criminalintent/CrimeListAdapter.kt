@@ -9,29 +9,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.criminalintent.databinding.ListItemCrimeBinding
 
 class CrimeHolder( private val binding: ListItemCrimeBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(crime: Crime) {
+    fun bind(crime: Crime, onCrimeClicked: () -> Unit) {
         binding.crimeTitle.text = crime.title
         binding.crimeDate.text = crime.date.toString()
 
-        if (!crime.requiresPolice) {
-            binding.callPolice.visibility = Button.GONE
-        } else {
-            binding.callPolice.visibility = Button.VISIBLE
-            binding.callPolice.setOnClickListener {
-                Toast.makeText(
-                    binding.callPolice.context,
-                    "${crime.title} clicked!",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+        binding.root.setOnClickListener{
+            onCrimeClicked
         }
+
 
 
 
 
     }
 
-    class CrimeListAdapter(private val crimes: List<Crime>) : RecyclerView.Adapter<CrimeHolder>() {
+    class CrimeListAdapter(private var crimes: List<Crime>, private val onCrimeClicked:() -> Unit) : RecyclerView.Adapter<CrimeHolder>() {
         override fun onCreateViewHolder(
             parent: ViewGroup,
             viewType: Int
@@ -48,7 +40,7 @@ class CrimeHolder( private val binding: ListItemCrimeBinding) : RecyclerView.Vie
             val crime = crimes[position]
 
             holder.apply {
-                holder.bind(crime)
+                holder.bind(crime,onCrimeClicked )
             }
 
         }
@@ -56,5 +48,6 @@ class CrimeHolder( private val binding: ListItemCrimeBinding) : RecyclerView.Vie
         override fun getItemCount(): Int {
             return crimes.size
         }
+
     }
 }

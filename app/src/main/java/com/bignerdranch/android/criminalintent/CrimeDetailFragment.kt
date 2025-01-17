@@ -15,7 +15,7 @@ class CrimeDetailFragment : Fragment(){
     private lateinit var crime: Crime
     val binding
         get() = checkNotNull(_binding){
-            "Cannot acesss binding becaust it is null." +
+            "Cannot access binding because it is null." +
                     " Is the view visible?"
         }
 
@@ -25,8 +25,7 @@ class CrimeDetailFragment : Fragment(){
             id = UUID.randomUUID(),
             title = "",
             date = Date(),
-            isSolved = false,
-            requiresPolice = false
+            isSolved = false
         )
 
     }
@@ -45,7 +44,7 @@ class CrimeDetailFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
         binding.apply{
 
-            crimeTitle.doOnTextChanged(){ text, _, _, _ ->
+            crimeTitle.doOnTextChanged{ text, _, _, _ ->
                 crime = crime.copy(title = text.toString())
             }
 
@@ -55,7 +54,7 @@ class CrimeDetailFragment : Fragment(){
 
             }
 
-            crimeSolved.setOnCheckedChangeListener(){ _, isChecked ->
+            crimeSolved.setOnCheckedChangeListener{ _, isChecked ->
                 crime = crime.copy(isSolved = isChecked)
             }
         }
